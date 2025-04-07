@@ -24,7 +24,7 @@ const createWebSocketService = () => {
         if (DEBUG) console.log("Returning existing WebSocket service instance");
         return serviceInstance;
       }
-      this.url = "wss://bvwq1y85ha.execute-api.us-east-1.amazonaws.com/prod";
+      this.url = "wss://37gj7ea8l3.execute-api.us-east-1.amazonaws.com/prod/";
       this.socket = null;
       this.isConnected = false;
       this.messageCallbacks = [];
@@ -65,14 +65,21 @@ const createWebSocketService = () => {
           this.connectionCallbacks.forEach((cb) => cb(true));
           if (this.pendingMessages.length > 0) {
             if (DEBUG) console.log(`Sending ${this.pendingMessages.length} pending messages`);
-            [...this.pendingMessages].forEach((item) => {
-              this.doSendMessage(item.message, item.modelType);
+            [...this.pendingMessages].forEach((message) => {
+              this.doSendMessage(message);
             });
             this.pendingMessages = [];
           }
         };
         this.socket.onmessage = (event) => {
           if (DEBUG) console.log("WebSocket raw message received:", event.data);
+          
+          // Skip empty messages
+          if (!event.data || event.data.trim() === "") {
+            if (DEBUG) console.log("Received empty message, ignoring");
+            return;
+          }
+          
           try {
             const data = JSON.parse(event.data);
             if (DEBUG) console.log("Parsed WebSocket message:", data);
@@ -124,33 +131,37 @@ const createWebSocketService = () => {
       }
     }
 
-    sendMessage(message, modelType = "deepseek") {
-      if (DEBUG) console.log(`Attempting to send message using ${modelType} model:`, message);
+    // Simplified to just send a message
+    sendMessage(message) {
+      if (DEBUG) console.log('Attempting to send message:', message);
+      
       if (!this.isConnected) {
         if (DEBUG) console.log("WebSocket not connected, queuing message and connecting...");
-        if (!this.pendingMessages.some((item) => item.message === message)) {
-          this.pendingMessages.push({ message, modelType });
+        if (!this.pendingMessages.includes(message)) {
+          this.pendingMessages.push(message);
         }
         this.connect();
         return;
       }
-      this.doSendMessage(message, modelType);
+      
+      this.doSendMessage(message);
     }
-
-    doSendMessage(message, modelType = "deepseek") {
+    
+    doSendMessage(message) {
       if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        // Simplified payload - no model_type
         const payload = JSON.stringify({
           action: "sendMessage",
-          message,
-          model_type: modelType,
+          message
         });
         if (DEBUG) console.log("Sending WebSocket message:", payload);
         this.socket.send(payload);
       } else {
         console.error("WebSocket is not connected or ready. Readystate:", this.socket ? this.socket.readyState : "no socket");
-        if (!this.pendingMessages.some((item) => item.message === message)) {
-          this.pendingMessages.push({ message, modelType });
+        if (!this.pendingMessages.includes(message)) {
+          this.pendingMessages.push(message);
         }
+        
         if (this.socket && (this.socket.readyState === WebSocket.CLOSING || this.socket.readyState === WebSocket.CLOSED)) {
           if (DEBUG) console.log("Socket is closing or closed, attempting to reconnect...");
           this.connect();
@@ -184,7 +195,7 @@ const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState("Connecting...");
-  const [selectedModel, setSelectedModel] = useState("mediseek");
+  // Removed selectedModel state
   const fallbackTimerRef = useRef(null);
   const lastMessageRef = useRef(null); // Track the last processed message ID
 
@@ -200,12 +211,25 @@ const ChatInterface = () => {
       }
 
       if (data && data.response) {
+        // Standard response format (original)
         const messageId = Date.now() + 1;
         setMessages((prev) => {
           if (prev.some((msg) => msg.content === data.response && msg.id === lastMessageRef.current)) {
             return prev; // Skip if duplicate
           }
           const aiMessage = { id: messageId, content: data.response, role: "assistant" };
+          lastMessageRef.current = messageId;
+          return [...prev, aiMessage];
+        });
+        setIsLoading(false);
+      } else if (data && data.message) {
+        // Handling the new Lambda format that uses 'message' field
+        const messageId = Date.now() + 1;
+        setMessages((prev) => {
+          if (prev.some((msg) => msg.content === data.message && msg.id === lastMessageRef.current)) {
+            return prev; // Skip if duplicate
+          }
+          const aiMessage = { id: messageId, content: data.message, role: "assistant" };
           lastMessageRef.current = messageId;
           return [...prev, aiMessage];
         });
@@ -247,7 +271,8 @@ const ChatInterface = () => {
     const userMessage = { id: Date.now(), content: messageText, role: "user" };
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
-    webSocketService.sendMessage(messageText, selectedModel);
+    // Call sendMessage with just the message text
+    webSocketService.sendMessage(messageText);
     fallbackTimerRef.current = setTimeout(() => {
       const aiMessage = {
         id: Date.now() + 1,
@@ -307,19 +332,3 @@ const ChatInterface = () => {
 };
 
 export default ChatInterface;
-
-
-
-
-
-// # # For LSTM model (smallest)
-// # export MODEL_TO_LOAD=lstm
-// # python app.py
-
-// # # Or for DeepSeek
-// # export MODEL_TO_LOAD=deepseek
-// # python app.py
-
-// # # Or for MediSeek
-// # export MODEL_TO_LOAD=mediseek
-// # python app.py

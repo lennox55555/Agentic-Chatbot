@@ -1,4 +1,4 @@
-// WebSocketService.js - Final Version with Debug Mode
+// WebSocketService.js - Simplified Version for Lambda-only communication
 
 // Create a singleton instance that persists across hot reloads
 let serviceInstance = null;
@@ -14,8 +14,7 @@ class WebSocketService {
       return serviceInstance;
     }
     
-    // Remove trailing slash from URL if present
-    this.url = "wss://bvwq1y85ha.execute-api.us-east-1.amazonaws.com/prod";
+    this.url = "wss://37gj7ea8l3.execute-api.us-east-1.amazonaws.com/prod/";
     this.socket = null;
     this.isConnected = false;
     this.messageCallbacks = [];
@@ -34,7 +33,6 @@ class WebSocketService {
     
     // Setup window event listeners to handle page lifecycle
     if (typeof window !== 'undefined') {
-      // Try to gracefully close the connection when the page is unloaded
       window.addEventListener('beforeunload', () => {
         if (this.socket && this.isConnected) {
           if (DEBUG) console.log('Page is being unloaded, closing WebSocket');
@@ -57,8 +55,8 @@ class WebSocketService {
       this.socket.onopen = () => {
         if (DEBUG) console.log('WebSocket connection established successfully');
         this.isConnected = true;
-        this.reconnectAttempts = 0; // Reset reconnect attempts on successful connection
-        this.reconnectDelay = 3000; // Reset reconnect delay
+        this.reconnectAttempts = 0;
+        this.reconnectDelay = 3000;
         
         // Notify all connection callbacks
         this.connectionCallbacks.forEach(callback => callback(true));
@@ -81,7 +79,6 @@ class WebSocketService {
           this.messageCallbacks.forEach(callback => callback(data));
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
-          // Try to send the raw data even if parsing failed
           this.messageCallbacks.forEach(callback => callback({ 
             error: "Failed to parse response", 
             raw: event.data 
@@ -94,11 +91,9 @@ class WebSocketService {
         this.isConnected = false;
         this.connectionCallbacks.forEach(callback => callback(false));
         
-        // Don't reconnect if the connection was closed normally (1000 = normal closure, 1001 = going away)
-        // or if max attempts reached
         if (event.code !== 1000 && event.code !== 1001 && this.reconnectAttempts < this.maxReconnectAttempts) {
           this.reconnectAttempts++;
-          const delay = Math.min(this.reconnectDelay * this.reconnectAttempts, 30000); // Max 30 seconds
+          const delay = Math.min(this.reconnectDelay * this.reconnectAttempts, 30000);
           if (DEBUG) console.log(`Will attempt to reconnect in ${delay/1000} seconds... (Attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
           setTimeout(() => this.connect(), delay);
         } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
@@ -127,12 +122,12 @@ class WebSocketService {
     }
   }
   
+  // Simplified to just send a string message to the Lambda
   sendMessage(message) {
     if (DEBUG) console.log('Attempting to send message:', message);
     
     if (!this.isConnected) {
       if (DEBUG) console.log('WebSocket not connected, queuing message and connecting...');
-      // Store message to send after connection
       if (!this.pendingMessages.includes(message)) {
         this.pendingMessages.push(message);
       }
@@ -145,20 +140,19 @@ class WebSocketService {
   
   doSendMessage(message) {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      // Simplify the payload to match what the Lambda expects
       const payload = JSON.stringify({
         action: 'sendMessage',
-        message
+        message: message
       });
       if (DEBUG) console.log('Sending WebSocket message:', payload);
       this.socket.send(payload);
     } else {
-      console.error('WebSocket is not connected or ready. ReadyState:', this.socket ? this.socket.readyState : 'no socket');
-      // Queue the message for later sending if not already queued
+      console.error('WebSocket not connected or ready. ReadyState:', this.socket ? this.socket.readyState : 'no socket');
       if (!this.pendingMessages.includes(message)) {
         this.pendingMessages.push(message);
       }
       
-      // If the socket exists but is closing or closed, reconnect
       if (this.socket && (this.socket.readyState === WebSocket.CLOSING || this.socket.readyState === WebSocket.CLOSED)) {
         if (DEBUG) console.log('Socket is closing or closed, attempting to reconnect...');
         this.connect();
@@ -167,22 +161,17 @@ class WebSocketService {
   }
   
   onMessage(callback) {
-    // Remove any duplicate callbacks
     this.messageCallbacks = this.messageCallbacks.filter(cb => cb !== callback);
     this.messageCallbacks.push(callback);
   }
   
   onConnectionChange(callback) {
-    // Remove any duplicate callbacks
     this.connectionCallbacks = this.connectionCallbacks.filter(cb => cb !== callback);
     this.connectionCallbacks.push(callback);
-    
-    // Immediately notify of current state
     callback(this.isConnected);
   }
   
   onError(callback) {
-    // Remove any duplicate callbacks
     this.errorCallbacks = this.errorCallbacks.filter(cb => cb !== callback);
     this.errorCallbacks.push(callback);
   }
