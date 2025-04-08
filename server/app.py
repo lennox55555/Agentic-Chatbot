@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+# Adding langchain stuff here
 @app.route('/health', methods=['GET'])
 def health_check():
     """Simple health check endpoint"""
