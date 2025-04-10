@@ -1,0 +1,62 @@
+.messageList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  
+  font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.emptyHeading {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.emptyText {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.loadingDots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.loadingDots span {
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.loadingDots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.loadingDots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+

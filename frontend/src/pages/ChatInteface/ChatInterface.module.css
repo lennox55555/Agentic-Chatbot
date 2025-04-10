@@ -1,0 +1,173 @@
+.container {
+  /* background: linear-gradient(to right, #012169, #00539B); */
+  background: 
+      radial-gradient(circle at 20% 30%, #012169 5%, transparent 25%),
+      radial-gradient(circle at 70% 60%, #00539B, 5%, transparent 25%),
+      linear-gradient(to right, #012169, #00539B),
+      #00539B;
+    animation: visualize 8s infinite alternate;
+  color: transparent;
+  min-height: 100vh;
+  /* background-color: #00539B; */
+  color: #E2E6ED;
+  display: flex;
+  
+  flex-direction: column;
+  position: relative;
+  font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif;
+
+}
+
+.dukeLogo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.dukeLogo label {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin: 0;
+  cursor: default;
+}
+
+/* Optional: Add Duke logo image */
+.dukeLogo:before {
+  content: '';
+  background-image: url('/path-to-duke-logo.png'); /* Add actual path to Duke logo */
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+.chatContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem 1rem;
+  height: 100vh;
+}
+
+.heading {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 2.5rem 0 2rem;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.messageArea {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 2rem;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  position: relative;
+  
+  /* background: ; */
+  padding: 1rem;
+
+  /* border-radius: 1rem;
+  padding: 0.75rem;
+  border: 2px solid #E2E6ED; */
+}
+
+.modelSelector {
+  position: absolute;
+  top: 20px;
+  left: 180px; /* Positioned to the right of Duke logo */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.modelSelector label {
+  font-size: 0.9rem;
+  color: #f3f3f3;
+}
+
+.modelSelector select {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: #00539B; /* Duke's secondary blue */
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.loadingSpinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinnerCircle {
+  border: 8px solid rgba(255, 255, 255, 0.1);
+  border-top: 8px solid #E2E6ED;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.inputArea {
+  position: sticky;
+  bottom: 0;
+  /* background-color: #00539B;  */
+  padding-top: 1rem;
+}
+
+.quickActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.topRightButtons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 15px;
+  z-index: 10;
+}
+
+.topButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  transition: color 0.2s ease;
+}
+
+.topButton:hover {
+  color: #C9D967; /* Duke's lime accent color for hover states */
+}
