@@ -161,7 +161,7 @@ def main():
                         'id': f"doc_{count}",
                         'values': embedding,
                         'metadata': {
-                            'filename': file
+                            'file_path': file_path
                         }
                     }
                     
