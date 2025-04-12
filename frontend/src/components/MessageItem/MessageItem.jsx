@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import styles from './MessageItem.module.css'; // Assuming you're using CSS modules
 
 const MessageItem = ({ message }) => {
@@ -17,7 +18,9 @@ const MessageItem = ({ message }) => {
       </div>
       <div className={styles.messageContent}>
         <div className={styles.role}>{isUser ? "You" : "MediSeek"}</div>
-        <div className={styles.text}>{message.content}</div>
+        <div className={styles.text}>
+          <ReactMarkdown>{message.content}</ReactMarkdown>
+        </div>
       </div>
     </div>
   );
