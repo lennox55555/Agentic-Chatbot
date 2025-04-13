@@ -6,7 +6,7 @@
   display: flex;
   align-items: flex-end;
   gap: 0.5rem;
-  /* background-color: #00539B; */
+  background: transparent;
   border-radius: 1rem;
   padding: 0.75rem;
   border: 2px solid #E2E6ED;
