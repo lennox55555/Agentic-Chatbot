@@ -48,16 +48,30 @@ Agentic-Chatbot/
 ├── requirements.txt             # Python dependencies for the project
 ├── upload_to_pinecone.py        # Script to upload data to Pinecone vector database (done locally)
 ```
+## Modeling Decisions 
+
+Since this project is an agentic chatbot, we decided to use two main sets of tools: 
+
+#### 1. RAG System (PineCone) 
+
+The RAG system is used to save data scraped offline from different websites, namely "https://masters.pratt.duke.edu/*", "https://gradschool.duke.edu/academics/*", "https://admissions.duke.edu/academic-possibilities/*", as well as any relevant information pertaining to Duke University on Wikipedia. 
+(Note: the * indicates all pages under the URL) 
+
+Since most of the data in the RAG system pertains to the curriculum, the curriculum agent utilize the data from the vector DB to augment its answers. 
+
+[TALK ABOUT CHUNKING HERE AND ANY OTHER RELEVANT INFORMATION. FEEL FREE TO MODIFY THE ABOVE PARAGRAPH]
+
+#### 2. Duke API
+
+Duke University offers an API that we were able to access as students. The API offers routes that allowed us to access information pertaining to curriculum, events, and different locations on campus. We have implemented a duke API service that has code accessing all the different routes. The agents then utilize these functions as tools to retrieve information based on the query. 
+NOTE: we have created a subjects.json under `data/metadata`, which is used to call the curriculum API since the subjects are pre-determined and we had to scrape them from the Duke API page to be able to make the API calls. 
 
 ## System architecture 
 
-## Modeling Decisions 
 
-Modeling decisions (architecture? fine-tuning? RAG? Agentic framework?)
-"https://masters.pratt.duke.edu/",
-"https://gradschool.duke.edu/academics/",
-"https://admissions.duke.edu/academic-possibilities/"
-"https://wikipedia.com
+
+
+
 
 ## Performance Evaluation 
 
