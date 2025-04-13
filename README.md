@@ -7,6 +7,43 @@ This chatbot is designed for incoming duke students or students considering appl
 
 ## Project Structure 
 
+```
+Agentic-Chatbot/
+├── evaluation/
+│   ├── eval.py                  # Evaluation logic for the chatbot
+│   ├── llm_eval_results.csv     # Results of language model evaluations
+│   ├── visualization.py         # Scripts for visualizing evaluation results
+├── frontend/                    # frontend repo for the REACT app 
+├── server/
+│   ├── agents/
+│   │   ├── __init__.py          # Initialization for the agents module
+│   │   ├── base_agent.py        # Base class for chatbot agents
+│   │   ├── curriculum_agent.py  # Agent handling curriculum-related tasks (Duke Curriculum API)
+│   │   ├── events_agent.py      # Agent managing event-related queries (Duke Events API)
+│   │   ├── locations_agent.py   # Agent for location-based queries (Duke Places API)
+│   │   ├── router_agent.py      # Router agent that implements routing logic between different agents
+│   ├── data/
+│   │   └── metadata/
+│   │       └── subjects.json    # Metadata file containing subject information
+│   ├── services/
+│       ├── duke_api_service/
+│       │   ├── __init__.py      # Initialization for Duke API services
+│       │   ├── pinecone_services.py  # Integration with Pinecone vector database
+│       │   ├── query_service.py      # Service handling query operations (synchronously)
+│       │   ├── webscraping_service.py # Service for web scraping operations (executed locally)
+│       ├── tools/
+│           ├── __init__.py           
+│           ├── duke_api_tools.py  # Script implementing the tools used by agents (using the Duke API)
+│   ├── app.py                   #  Main application logic (entry point of the EC2)
+│   ├── lambda_handler.py        # Code that goes in the AWS Lambda
+├── test/                        # Directory for test cases (if applicable)
+├── .gitignore                   # Git ignore file specifying untracked files
+├── LICENSE                      # License file for the project
+├── README.md                    # Documentation file (this file)
+├── requirements.txt             # Python dependencies for the project
+├── upload_to_pinecone.py        # Script to upload data to Pinecone vector database (done locally)
+```
+
 ## System architecture 
 
 ## Modeling Decisions 
