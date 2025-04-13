@@ -75,7 +75,7 @@ The architecture of the chatbot is modular, agent-based, and designed to be scal
 The RouterAgent is the central decision-maker. It is initialized with access to all specialized agents and uses a dedicated system prompt to determine which agent(s) should handle a given query. For cross-domain questions, it combines responses from multiple agents using a final synthesis LLM call. The router shares memory with all agents, allowing it to consider previous messages and maintain session context.
 
 #### Agent Specialization:
-Each agent (CurriculumAgent, EventsAgent, LocationsAgent) inherits from a BaseAgent that defines shared behavior and interface. This avoids code duplication and ensures consistent structure. Each agent has a custom system prompt and a tailored set of LangChain tools that wrap around the corresponding Duke API calls.
+Each agent (CurriculumAgent, EventsAgent, LocationsAgent) inherits from a BaseAgent that defines shared behavior and interface. This avoids code duplication and ensures consistent structure. Each agent has a custom system prompt and a tailored set of LangChain tools that wrap around the corresponding Duke API calls. Each LangChain tool has a detailed description outlining its use cases, while having special instructions dealing with bottlenecks that it ran to during testing. 
 
 #### Service Layer:
 
