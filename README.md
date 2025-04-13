@@ -68,31 +68,78 @@ NOTE: we have created a subjects.json under `data/metadata`, which is used to ca
 
 ## System architecture 
 
+#### System Architecture
+The architecture of the chatbot is modular, agent-based, and designed to be scalable and maintainable. The backend logic is centralized in app.py, which serves as the main entry point for handling user queries and routing them to the appropriate agents. Each agent is designed to handle a specific domain: curriculum, events, or locations.
 
+#### Router Agent Design:
+The RouterAgent is the central decision-maker. It is initialized with access to all specialized agents and uses a dedicated system prompt to determine which agent(s) should handle a given query. For cross-domain questions, it combines responses from multiple agents using a final synthesis LLM call. The router shares memory with all agents, allowing it to consider previous messages and maintain session context.
 
+#### Agent Specialization:
+Each agent (CurriculumAgent, EventsAgent, LocationsAgent) inherits from a BaseAgent that defines shared behavior and interface. This avoids code duplication and ensures consistent structure. Each agent has a custom system prompt and a tailored set of LangChain tools that wrap around the corresponding Duke API calls.
 
+#### Service Layer:
 
+- `duke_api_service/` abstracts calls to Duke’s APIs (curriculum, events, and locations).
+
+- `pinecone_services.py` handles interactions with the Pinecone vector store for RAG-based retrieval.
+
+- `query_service.py` manages chat session memory and coordinates agent interactions.
+
+- `webscraping_service.py` is responsible for collecting data offline, which is then uploaded to Pinecone using upload_to_pinecone.py.
+
+#### Metadata Handling:
+The `data/metadata/subjects.json` file contains pre-fetched subject codes required by the curriculum API. These codes were scraped manually and are used dynamically by the curriculum tools during inference.
+
+This architecture ensures separation of concerns, clean routing logic, and flexible agent management — making it easier to debug or extend the system in the future.
 
 ## Performance Evaluation 
 
-## Approach to Cost Minimization 
+The performance of the chatbot was evaluated both quantitatively and qualitatively.
 
-Functional user interface
+### Automatic Evaluation:
+The eval.py script tests the chatbot against 20 curated benchmark questions with known ground truth answers. For each question, the chatbot's response is compared using:
 
-•
-10-minute max video
+- **ROUGE-L**: Measures overlap of longest common subsequences.
 
-–
-Data sources and data collection/access
+- **BERTScore-F1**: Embedding-based similarity metric.
 
-–
-System architecture
+- **BLEU**: Measures n-gram overlap with the reference answer.
 
-–
+Results are saved in `llm_eval_results.csv`.
+
+### User Evaluation:
+Five users were asked to rate each response from the chatbot on a 1–5 scale based on helpfulness and accuracy, where 5 indicates an accurate and helpful response. The average of these scores is recorded as the "User Score" for each question in the same CSV file.
+
+#### Visualization:
+To better understand the results, visualization.py generates visual summaries:
+
+- Bar charts for individual metric scores per query.
+
+- Aggregated bar charts for average ROUGE, BERTScore, BLEU, and User Score.
+
+These visualizations help diagnose underperforming areas and inform future system improvements.
+
+## Approach to Cost Minimization
+To keep inference costs low while maintaining performance, several strategies were implemented:
+
+#### Selective Agent Invocation:
+Instead of invoking all agents for each query, the RouterAgent dynamically selects the most relevant agent(s). This reduces unnecessary LLM calls and minimizes latency and cost. Furthermore, the agents are ran in parallel if multiple agents are required at once. 
+
+#### Query Filtering at the Edge:
+The AWS Lambda function pre-filters incoming queries and rejects those unrelated to Duke University. This prevents unnecessary backend computation and LLM usage.
+
+#### Model Selection:
+The chatbot uses GPT-4o-mini, a lighter-weight variant of GPT-4o, which offers strong performance with significantly lower costs. Prompt engineering was used to maximize the performance of this smaller model without relying on a more expensive alternative.
+
+#### Efficient Memory Management:
+Shared memory across agents avoids redundant LLM context initialization and ensures better performance with fewer tokens per call.
+
+#### Offline Data Scraping + RAG:
+Relevant Duke-related web content was scraped offline and embedded into a Pinecone vector store. This allows the curriculum agent to answer curriculum-related questions without requiring expensive live calls to the LLM for all queries, while minimizing latency since the resources scraped from the websites are static
+
+Together, these strategies ensure that the chatbot remains scalable and cost-efficient while still providing helpful, high-quality answers.
 
 
-–
-Performance evaluation
+## Demo 
+[INSERT LINK TO THE DEMO HERE]
 
-–
-Cost estimations / approach to cost minimization
