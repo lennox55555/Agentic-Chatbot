@@ -134,10 +134,30 @@
 .inputArea {
   position: sticky;
   bottom: 0;
-  /* background-color: #00539B;  */
   padding-top: 1rem;
+  background: 
+      radial-gradient(circle at 20% 30%, #012169 5%, transparent 25%),
+      radial-gradient(circle at 70% 60%, #00539B 5%, transparent 25%),
+      linear-gradient(to right, #012169, #00539B),
+      #00539B;
+  background-attachment: fixed;
+  background-size: cover;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%);
 }
 
+.inputArea::before {
+  content: "";
+  position: absolute;
+  top: -1rem;
+  left: 0;
+  width: 100%;
+  height: 1rem;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2));
+  pointer-events: none;
+  z-index: 2;
+}
 .quickActions {
   display: flex;
   gap: 0.5rem;

@@ -17,7 +17,7 @@ const MessageItem = ({ message }) => {
         )}
       </div>
       <div className={styles.messageContent}>
-        <div className={styles.role}>{isUser ? "You" : "MediSeek"}</div>
+        <div className={styles.role}>{isUser ? "You" : "BlueAgent"}</div>
         <div className={styles.text}>
           <ReactMarkdown>{message.content}</ReactMarkdown>
         </div>
