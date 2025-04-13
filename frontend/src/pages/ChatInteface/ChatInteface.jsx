@@ -308,16 +308,6 @@ const ChatInterface = () => {
       {/* Top right buttons */}
       <div className={styles.topRightButtons}>
         <a 
-          href="./evaluation_results/evaluation_report.html" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className={styles.topButton}
-          title="Evaluation Results"
-        >
-          <i className="bi bi-info-circle"></i>
-        </a>
-  
-        <a 
           href="https://github.com/lennox55555/Agentic-Chatbot" 
           target="_blank" 
           rel="noopener noreferrer" 
