@@ -11,7 +11,6 @@ const MessageList = ({ messages, isLoading }) => {
           <p><b>Developers' Note:</b> BlueAgent should only be used for informational purposes and
           is not meant to represent Duke University's views or opinions. This chatbot is not used for business purposes. It is only meant to make
           information about Duke University more accessible to the general public, incoming students, or students considering applying to Duke University.</p>
-          <p>Please click on the info button or <a href="./evaluation_results/evaluation_report.html" target="_noblank"><nobr>here</nobr></a> to learn more about the models' performances. </p>
         </div>
       ) : (
         <Fragment>
