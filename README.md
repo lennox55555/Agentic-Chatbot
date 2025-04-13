@@ -27,10 +27,15 @@ Agentic-Chatbot/
 │   │       └── subjects.json    # Metadata file containing subject information
 │   ├── services/
 │       ├── duke_api_service/
-│       │   ├── __init__.py      # Initialization for Duke API services
-│       │   ├── pinecone_services.py  # Integration with Pinecone vector database
-│       │   ├── query_service.py      # Service handling query operations (synchronously)
-│       │   ├── webscraping_service.py # Service for web scraping operations (executed locally)
+│            └── __init__.py   
+│            └── base.py         # Base API class (reusable code across all Duke APIs)
+│            └── curriculum.py   # Class implementing calls to the Duke curriculum API routes
+│            └── events.py       # Class implementing calls to the Duke events API routes
+│            └── places.py       # Class implementing calls to the Duke places API routes
+│       ├── __init__.py      # Initialization for Duke API services
+│       ├── pinecone_services.py  # Integration with Pinecone vector database
+│       ├── query_service.py      # Service handling query operations (synchronously)
+│       ├── webscraping_service.py # Service for web scraping operations (executed locally)
 │       ├── tools/
 │           ├── __init__.py           
 │           ├── duke_api_tools.py  # Script implementing the tools used by agents (using the Duke API)
