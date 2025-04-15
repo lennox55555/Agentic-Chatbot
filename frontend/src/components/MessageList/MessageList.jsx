@@ -23,7 +23,7 @@ const MessageList = ({ messages, isLoading }) => {
       {isLoading && (
         <div className={`d-flex justify-content-start mb-4 ${styles.loadingContainer}`}>
           <div className={styles.avatar}>
-            <span>BlueAgent is looking for an answer...</span>
+            <span className={styles.shimmerText}>BlueAgent is looking for an answer...</span>
           </div>
           <div className={`${styles.messageBubble} ${styles.aiMessage}`}>
             <div className={styles.typingIndicator}>

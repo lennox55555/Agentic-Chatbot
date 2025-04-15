@@ -4,15 +4,6 @@ import MessageList from "../../components/MessageList/MessageList";
 import ChatInput from "../../components/ChatInput/ChatInput";
 import styles from "./ChatInterface.module.css";
 
-// A simple loading spinner component
-const LoadingSpinner = () => {
-  return (
-    <div className={styles.loadingSpinner}>
-      <div className={styles.spinnerCircle}></div>
-    </div>
-  );
-};
-
 // WebSocket service
 const createWebSocketService = () => {
   let serviceInstance = null;
@@ -297,7 +288,7 @@ const ChatInterface = () => {
         <h1 className={styles.heading}>Duke BlueAgent</h1>
         <div className={styles.messageArea}>
           <MessageList messages={messages} isLoading={isLoading} />
-          {isLoading && <LoadingSpinner />}
+          {isLoading}
         </div>
         <div className={styles.inputArea}>
           <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
