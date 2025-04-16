@@ -59,7 +59,9 @@ The RAG system is used to save data scraped offline from different websites, nam
 
 Since most of the data in the RAG system pertains to the curriculum, the curriculum agent utilize the data from the vector DB to augment its answers. 
 
-[TALK ABOUT CHUNKING HERE AND ANY OTHER RELEVANT INFORMATION. FEEL FREE TO MODIFY THE ABOVE PARAGRAPH]
+In order to handle the large document sizes while avoiding issues regarding token limits, we decided to use a paragraph based chunking approach. We split the text into seperate chunks based on the paragraph boundaries while maintaining the 8,000 token limit of the embedding model. When a paragraph exceeded this limit, we implemented a sliding window technique to ensure the embeddings have a natural language structure and no information is lost. 
+
+The embeddings from multi chunk documents were averaged to create one representation per file. To trace the responses back to their source, we stored the metadata (including the original path) with each embedding. Lastly we uploaded the embeddings to pinecone in batches of 100.
 
 #### 2. Duke API
 
@@ -109,6 +111,7 @@ Results are saved in `llm_eval_results.csv`.
 
 ### User Evaluation:
 Five users were asked to rate each response from the chatbot on a 1–5 scale based on helpfulness and accuracy, where 5 indicates an accurate and helpful response. The average of these scores is recorded as the "User Score" for each question in the same CSV file.
+Average user rating: 4.12
 
 #### Visualization:
 To better understand the results, visualization.py generates visual summaries:
@@ -118,6 +121,9 @@ To better understand the results, visualization.py generates visual summaries:
 - Aggregated bar charts for average ROUGE, BERTScore, BLEU, and User Score.
 
 These visualizations help diagnose underperforming areas and inform future system improvements.
+
+![Average Metrics](evaluation/Figure_2.png)
+![Metrics Per Quert](evaluation/Figure_1.png)
 
 ## Approach to Cost Minimization
 To keep inference costs low while maintaining performance, several strategies were implemented:
