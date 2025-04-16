@@ -60,3 +60,21 @@
   }
 }
 
+.shimmerText {
+  display: inline-block;
+  background: linear-gradient(90deg, #bbb 25%, #fff 50%, #bbb 75%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2.5s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
